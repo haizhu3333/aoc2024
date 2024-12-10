@@ -1,0 +1,35 @@
+cabal-version:      3.4
+name:               aoc2024
+version:            0.1.0.0
+license:            NONE
+category:           Data
+build-type:         Simple
+data-files:         inputs/*.txt
+
+common warnings
+    ghc-options: -Wall
+    default-extensions: OverloadedStrings
+
+library
+    import:           warnings
+    exposed-modules:  Textlib, Utils
+    other-modules:    Paths_aoc2024
+    autogen-modules:  Paths_aoc2024
+    build-depends:    base, bytestring, text, megaparsec
+    hs-source-dirs:   lib
+    default-language: GHC2021
+
+executable day01
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, unordered-containers, text
+    hs-source-dirs:   day01
+    default-language: GHC2021
+
+executable day02
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, text
+    hs-source-dirs:   day02
+    default-language: GHC2021
+
