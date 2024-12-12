@@ -15,7 +15,7 @@ library
     exposed-modules:  Textlib, Utils
     other-modules:    Paths_aoc2024
     autogen-modules:  Paths_aoc2024
-    build-depends:    base, bytestring, text, megaparsec
+    build-depends:    base, bytestring, text, megaparsec, massiv
     hs-source-dirs:   lib
     default-language: GHC2021
 
@@ -33,3 +33,16 @@ executable day02
     hs-source-dirs:   day02
     default-language: GHC2021
 
+executable day03
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, megaparsec, text
+    hs-source-dirs:   day03
+    default-language: GHC2021
+
+executable day04
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, massiv
+    hs-source-dirs:   day04
+    default-language: GHC2021
