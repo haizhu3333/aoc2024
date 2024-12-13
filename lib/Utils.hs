@@ -15,7 +15,7 @@ import Data.Void (Void)
 import Data.Word (Word8)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Text.Megaparsec (Parsec, parse, errorBundlePretty)
+import Text.Megaparsec (Parsec, parse, errorBundlePretty, eof)
 import Text.Printf (printf)
 
 loadInputBytes :: Int -> IO ByteString
@@ -31,7 +31,7 @@ type Parser = Parsec Void Text
 parseInput :: Int -> Parser a -> IO a
 parseInput day p = do
     txt <- loadInput day
-    case parse p (printf "%02d.txt" day) txt of
+    case parse (p <* eof) (printf "%02d.txt" day) txt of
         Left err -> do
             hPutStrLn stderr $ errorBundlePretty err
             exitFailure

@@ -8,7 +8,7 @@ data-files:         inputs/*.txt
 
 common warnings
     ghc-options: -Wall
-    default-extensions: OverloadedStrings
+    default-extensions: OverloadedStrings, RecordWildCards
 
 library
     import:           warnings
@@ -22,7 +22,7 @@ library
 executable day01
     import:           warnings
     main-is:          Main.hs
-    build-depends:    base, aoc2024, unordered-containers, text
+    build-depends:    base, aoc2024, text, unordered-containers
     hs-source-dirs:   day01
     default-language: GHC2021
 
@@ -45,4 +45,11 @@ executable day04
     main-is:          Main.hs
     build-depends:    base, aoc2024, massiv
     hs-source-dirs:   day04
+    default-language: GHC2021
+
+executable day05
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, megaparsec, text, unordered-containers 
+    hs-source-dirs:   day05
     default-language: GHC2021
