@@ -8,7 +8,7 @@ data-files:         inputs/*.txt
 
 common warnings
     ghc-options: -Wall
-    default-extensions: OverloadedStrings, RecordWildCards
+    default-extensions: OverloadedStrings, RecordWildCards, ViewPatterns
 
 library
     import:           warnings
@@ -67,4 +67,11 @@ executable day07
     main-is:          Main.hs
     build-depends:    base, aoc2024, megaparsec
     hs-source-dirs:   day07
+    default-language: GHC2021
+
+executable day08
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, massiv, unordered-containers
+    hs-source-dirs:   day08
     default-language: GHC2021

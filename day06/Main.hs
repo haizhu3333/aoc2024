@@ -1,6 +1,6 @@
-{-# LANGUAGE ViewPatterns #-}
 module Main (main) where
 
+import Control.Monad (guard)
 import Data.HashSet (HashSet)
 import qualified Data.HashSet as S
 import Data.Massiv.Array (Ix2(..), U, Array, B, Ix1)
@@ -8,7 +8,6 @@ import qualified Data.Massiv.Array as A
 import Data.Maybe (fromMaybe)
 
 import Utils (Grid, loadGrid, chr8)
-import Control.Monad (forM_, guard)
 
 findStart :: Grid -> Ix2
 findStart = fromMaybe (error "No ^ found") . A.findIndex (\x -> chr8 x == '^')
