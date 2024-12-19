@@ -12,7 +12,7 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  OrphanInstances, Textlib, Utils
+    exposed-modules:  OrphanInstances, Utils
     other-modules:    Paths_aoc2024
     autogen-modules:  Paths_aoc2024
     build-depends:    base, bytestring, hashable, massiv, megaparsec, text
@@ -88,4 +88,11 @@ executable day10
     main-is:          Main.hs
     build-depends:    base, aoc2024, massiv, unordered-containers
     hs-source-dirs:   day10
+    default-language: GHC2021
+
+executable day11
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, MemoTrie, text
+    hs-source-dirs:   day11
     default-language: GHC2021

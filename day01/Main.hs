@@ -3,17 +3,15 @@ module Main (main) where
 import Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as M
 import Data.List (sort)
-import Data.Text (Text)
 import qualified Data.Text as T
 
-import Textlib (parseInt)
-import Utils (loadInput)
+import Utils (Text, loadInput, readInt)
 
 parseTwoCols :: Text -> ([Int], [Int])
 parseTwoCols = unzip . map toPair . T.lines
   where
     toPair line = case T.splitOn "   " line of
-        [x, y] -> (parseInt x, parseInt y)
+        [x, y] -> (readInt x, readInt y)
         _ -> error $ "Bad format " ++ show line
 
 totalDist :: [Int] -> [Int] -> Int

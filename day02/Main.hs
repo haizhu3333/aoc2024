@@ -1,15 +1,13 @@
 module Main (main) where
 
-import Data.Text (Text)
 import qualified Data.Text as T
 
-import Textlib (parseInt)
-import Utils (loadInput)
+import Utils (Text, loadInput, readInt)
 
 parseLines :: Text -> [[Int]]
 parseLines = map split . T.lines
   where
-    split line = map parseInt $ T.splitOn " " line
+    split line = map readInt $ T.splitOn " " line
 
 safeLevels :: [Int] -> Bool
 safeLevels [] = True

@@ -1,6 +1,6 @@
 module Utils (
     Parser, ByteString, Text, Grid, Word8,
-    loadInputBytes, loadInput, parseInput, loadGrid, chr8
+    loadInputBytes, loadInput, readInt, parseInput, loadGrid, chr8
 ) where
 
 import Paths_aoc2024 (getDataFileName)
@@ -11,6 +11,7 @@ import Data.Massiv.Array (Array, P, Ix2)
 import qualified Data.Massiv.Array as A
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
+import qualified Data.Text.Read as T
 import Data.Void (Void)
 import Data.Word (Word8)
 import System.Exit (exitFailure)
@@ -25,6 +26,12 @@ loadInputBytes day = do
 
 loadInput :: Int -> IO Text
 loadInput day = T.decodeUtf8 <$> loadInputBytes day
+
+readInt :: Integral a => Text -> a
+readInt t = case T.decimal t of
+    Left err -> error $ "Cannot parse int: " ++ show err
+    Right (x, "") -> x
+    Right (_, leftover) -> error $ "Incomplete parse: " ++ show leftover
 
 type Parser = Parsec Void Text
 
