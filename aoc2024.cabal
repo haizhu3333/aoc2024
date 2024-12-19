@@ -96,3 +96,10 @@ executable day11
     build-depends:    base, aoc2024, MemoTrie, text
     hs-source-dirs:   day11
     default-language: GHC2021
+
+executable day12
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, massiv, unordered-containers
+    hs-source-dirs:   day12
+    default-language: GHC2021
