@@ -12,10 +12,10 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  Textlib, Utils
+    exposed-modules:  OrphanInstances, Textlib, Utils
     other-modules:    Paths_aoc2024
     autogen-modules:  Paths_aoc2024
-    build-depends:    base, bytestring, text, megaparsec, massiv
+    build-depends:    base, bytestring, hashable, massiv, megaparsec, text
     hs-source-dirs:   lib
     default-language: GHC2021
 

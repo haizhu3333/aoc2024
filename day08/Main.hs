@@ -7,10 +7,11 @@ import Data.List (tails)
 import Data.Massiv.Array (Sz2, Ix2)
 import qualified Data.Massiv.Array as A
 
+import OrphanInstances ()
 import Utils (Grid, loadGrid, chr8)
 
 type FreqMap = M.HashMap Char [Ix2]
-type Antinodes = S.HashSet (Int, Int)
+type Antinodes = S.HashSet Ix2
 type Rule = Sz2 -> Ix2 -> Ix2 -> [Ix2]
 
 toFreqMap :: Grid -> FreqMap
@@ -24,7 +25,7 @@ antinodes :: Rule -> Sz2 -> [Ix2] -> Antinodes
 antinodes rule size poslist = S.fromList $ do
     p0 : ps <- tails poslist
     p1 <- ps
-    map A.fromIx2 $ rule size p0 p1
+    rule size p0 p1
 
 allAntinodes :: Rule -> Grid -> Antinodes
 allAntinodes rule grid =

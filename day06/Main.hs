@@ -7,6 +7,7 @@ import Data.Massiv.Array (Ix2(..), U, Array, B, Ix1)
 import qualified Data.Massiv.Array as A
 import Data.Maybe (fromMaybe)
 
+import OrphanInstances ()
 import Utils (Grid, loadGrid, chr8)
 
 findStart :: Grid -> Ix2
@@ -27,12 +28,12 @@ startDir = -1 :. 0
 turnRight :: Ix2 -> Ix2
 turnRight (i :. j) = j :. (-i)
 
-tracePath :: Array U Ix2 Bool -> Ix2 -> HashSet (Int, Int)
+tracePath :: Array U Ix2 Bool -> Ix2 -> HashSet Ix2
 tracePath walls start = go start startDir S.empty
   where
     go pos dir acc =
         let pos' = pos + dir
-            acc' = S.insert (A.fromIx2 pos) acc
+            acc' = S.insert pos acc
         in  case A.indexM walls pos' of
                 Nothing -> acc'
                 Just True -> go pos (turnRight dir) acc
@@ -47,8 +48,7 @@ indexWalls1 (Walls1 walls w) pos
 
 addWall :: Array U Ix2 Bool -> Ix2 -> Array B Ix1 Walls1
 addWall walls start = A.fromList A.Par $ do
-    posPair <- S.toList $ tracePath walls start
-    let pos = A.toIx2 posPair
+    pos <- S.toList $ tracePath walls start
     guard $ pos /= start
     pure $ Walls1 walls pos 
 
