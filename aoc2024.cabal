@@ -7,7 +7,7 @@ build-type:         Simple
 data-files:         inputs/*.txt
 
 common warnings
-    ghc-options: -Wall
+    ghc-options: -Wall -Wno-type-defaults
     default-extensions: OverloadedStrings, RecordWildCards, ViewPatterns
 
 library
@@ -74,4 +74,11 @@ executable day08
     main-is:          Main.hs
     build-depends:    base, aoc2024, massiv, unordered-containers
     hs-source-dirs:   day08
+    default-language: GHC2021
+
+executable day09
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, containers, text, vector
+    hs-source-dirs:   day09
     default-language: GHC2021
