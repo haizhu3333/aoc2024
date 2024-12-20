@@ -103,3 +103,10 @@ executable day12
     build-depends:    base, aoc2024, massiv, unordered-containers
     hs-source-dirs:   day12
     default-language: GHC2021
+
+executable day13
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, megaparsec
+    hs-source-dirs:   day13
+    default-language: GHC2021
