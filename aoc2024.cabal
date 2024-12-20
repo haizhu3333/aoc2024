@@ -12,7 +12,7 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  OrphanInstances, Utils
+    exposed-modules:  OrphanInstances, Utils, Vec
     other-modules:    Paths_aoc2024
     autogen-modules:  Paths_aoc2024
     build-depends:    base, bytestring, hashable, massiv, megaparsec, text

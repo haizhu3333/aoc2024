@@ -7,28 +7,23 @@ import qualified Text.Megaparsec.Char as P
 import qualified Text.Megaparsec.Char.Lexer as P
 
 import Utils (Parser, parseInput)
-
-data V a = V !a !a deriving (Show, Functor)
-
-instance Applicative V where
-    pure x = V x x
-    V f g <*> V x y = V (f x) (g y)
+import Vec (V2(..))
 
 data Machine = Machine {
-    buttonA :: !(V Int), buttonB :: !(V Int), prize :: !(V Int)
+    buttonA :: !(V2 Int), buttonB :: !(V2 Int), prize :: !(V2 Int)
 } deriving Show
 
-buttonP :: Char -> Parser (V Int)
+buttonP :: Char -> Parser (V2 Int)
 buttonP name =
-    V <$  P.string "Button " <* P.char name <* P.string ": X+"
-      <*> P.decimal <* P.string ", Y+"
-      <*> P.decimal
+    V2 <$  P.string "Button " <* P.char name <* P.string ": X+"
+       <*> P.decimal <* P.string ", Y+"
+       <*> P.decimal
 
-prizeP :: Parser (V Int)
+prizeP :: Parser (V2 Int)
 prizeP =
-    V <$  P.string "Prize: X="
-      <*> P.decimal <* P.string ", Y="
-      <*> P.decimal
+    V2 <$  P.string "Prize: X="
+       <*> P.decimal <* P.string ", Y="
+       <*> P.decimal
 
 machineP :: Parser Machine
 machineP =
@@ -39,17 +34,17 @@ machineP =
 inputP :: Parser [Machine]
 inputP = machineP `P.sepBy` P.newline
 
-data Mat = Mat !(V Rational) !(V Rational) deriving Show
+type Matrix = V2 (V2 Rational)
 
-inverse :: Mat -> Maybe Mat
-inverse (Mat (V a b) (V c d))
+inverse :: Matrix -> Maybe Matrix
+inverse (V2 (V2 a b) (V2 c d))
   | det == 0 = Nothing
-  | otherwise = Just $ Mat (V (d / det) (- b / det)) (V (- c / det) (a / det))
+  | otherwise = Just $ V2 (V2 d (-b)) (V2 (-c) a) / pure (pure det)
   where
     det = a * d - b * c
 
-mulMV :: Mat -> V Rational -> V Rational
-mulMV (Mat c1 c2) (V x y) = (+) <$> fmap (* x) c1 <*> fmap (* y) c2
+mulMV :: Matrix -> V2 Rational -> V2 Rational
+mulMV (V2 c1 c2) (V2 x y) = pure x * c1 + pure y * c2
 
 getInt :: Rational -> Maybe Int
 getInt x
@@ -59,16 +54,16 @@ getInt x
     n = numerator x
     d = denominator x
 
-findPresses :: Machine -> Maybe (V Int)
+findPresses :: Machine -> Maybe (V2 Int)
 findPresses Machine{..} = do
-    let m = Mat (fromIntegral <$> buttonA) (fromIntegral <$> buttonB)
+    let m = V2 (fromIntegral <$> buttonA) (fromIntegral <$> buttonB)
         v = fromIntegral <$> prize
     m_inv <- inverse m
-    let V a b = mulMV m_inv v
-    V <$> getInt a <*> getInt b
+    let V2 a b = mulMV m_inv v
+    V2 <$> getInt a <*> getInt b
 
-tokensNeeded :: V Int -> Int
-tokensNeeded (V a b) = 3 * a + b
+tokensNeeded :: V2 Int -> Int
+tokensNeeded (V2 a b) = 3 * a + b
 
 totalTokensNeeded :: [Machine] -> Int
 totalTokensNeeded = sum . map tokensNeeded . mapMaybe findPresses
