@@ -2,6 +2,8 @@ module Vec (
     V2(..)
 ) where
 
+import Data.Hashable (Hashable(..))
+
 data V2 a = V2 !a !a
     deriving (Eq, Ord, Show, Functor)
 
@@ -22,3 +24,6 @@ instance Fractional a => Fractional (V2 a) where
     fromRational = pure . fromRational
     recip = fmap recip
     (/) = liftA2 (/)
+
+instance Hashable a => Hashable (V2 a) where
+    hashWithSalt s (V2 x y) = s `hashWithSalt` x `hashWithSalt` y
