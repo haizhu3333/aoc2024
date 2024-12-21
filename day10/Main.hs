@@ -8,12 +8,12 @@ import Data.Massiv.Array (Matrix, BL, U, Ix2(..))
 import qualified Data.Massiv.Array as A
 
 import OrphanInstances ()
-import Utils (Grid, chr8, loadGrid)
+import Utils (Grid, loadGrid)
 
 type Topo = Matrix U Int
 
 getTopo :: Grid -> Topo
-getTopo = A.compute @U . A.map (digitToInt . chr8)
+getTopo = A.compute @U . A.map digitToInt
 
 trailheads :: Topo -> [Ix2]
 trailheads topo = do

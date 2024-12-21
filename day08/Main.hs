@@ -8,7 +8,7 @@ import Data.Massiv.Array (Sz2, Ix2)
 import qualified Data.Massiv.Array as A
 
 import OrphanInstances ()
-import Utils (Grid, loadGrid, chr8)
+import Utils (Grid, loadGrid)
 
 type FreqMap = M.HashMap Char [Ix2]
 type Antinodes = S.HashSet Ix2
@@ -17,7 +17,7 @@ type Rule = Sz2 -> Ix2 -> Ix2 -> [Ix2]
 toFreqMap :: Grid -> FreqMap
 toFreqMap = A.ifoldlS go M.empty
   where
-    go freqs pos (chr8 -> c)
+    go freqs pos c
       | isAlphaNum c = M.insertWith (++) c [pos] freqs
       | otherwise = freqs
 

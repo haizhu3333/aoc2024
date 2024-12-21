@@ -8,19 +8,18 @@ import qualified Data.Massiv.Array as A
 import Data.Maybe (fromMaybe)
 
 import OrphanInstances ()
-import Utils (Grid, loadGrid, chr8)
+import Utils (Grid, loadGrid)
 
 findStart :: Grid -> Ix2
-findStart = fromMaybe (error "No ^ found") . A.findIndex (\x -> chr8 x == '^')
+findStart = fromMaybe (error "No ^ found") . A.findIndex (== '^')
 
 toWalls :: Grid -> Array U Ix2 Bool
 toWalls grid = A.compute @U (A.map isWall grid)
   where
-    isWall x = case chr8 x of
-        '.' -> False
-        '^' -> False
-        '#' -> True
-        ch -> error $ "Unexpected " ++ show ch
+    isWall '.' = False
+    isWall '^' = False
+    isWall '#' = True
+    isWall ch = error $ "Unexpected " ++ show ch
 
 startDir :: Ix2
 startDir = -1 :. 0

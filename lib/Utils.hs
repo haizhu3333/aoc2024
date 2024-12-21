@@ -1,13 +1,13 @@
 module Utils (
-    Parser, ByteString, Text, Grid, Word8,
-    loadInputBytes, loadInput, readInt, parseInput, loadGrid, chr8
+    Parser, Grid, ByteString, Text,
+    loadInput, readInt, parseInput, gridP, loadGrid
 ) where
 
 import Paths_aoc2024 (getDataFileName)
 
 import Data.ByteString (ByteString)
-import qualified Data.ByteString.Char8 as B
-import Data.Massiv.Array (Array, P, Ix2)
+import qualified Data.ByteString as B
+import Data.Massiv.Array (Matrix, P)
 import qualified Data.Massiv.Array as A
 import Data.Text (Text)
 import qualified Data.Text.Encoding as T
@@ -16,7 +16,8 @@ import Data.Void (Void)
 import Data.Word (Word8)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Text.Megaparsec (Parsec, parse, errorBundlePretty, eof)
+import qualified Text.Megaparsec as P
+import qualified Text.Megaparsec.Char as P
 import Text.Printf (printf)
 
 loadInputBytes :: Int -> IO ByteString
@@ -33,25 +34,30 @@ readInt t = case T.decimal t of
     Right (x, "") -> x
     Right (_, leftover) -> error $ "Incomplete parse: " ++ show leftover
 
-type Parser = Parsec Void Text
+type Parser = P.Parsec Void Text
 
 parseInput :: Int -> Parser a -> IO a
 parseInput day p = do
     txt <- loadInput day
-    case parse (p <* eof) (printf "%02d.txt" day) txt of
+    case P.parse (p <* P.eof) (printf "%02d.txt" day) txt of
         Left err -> do
-            hPutStrLn stderr $ errorBundlePretty err
+            hPutStrLn stderr $ P.errorBundlePretty err
             exitFailure
         Right x -> return x
 
-type Grid = Array P Ix2 Word8
+type Grid = Matrix P Char
+
+gridP :: Parser Grid
+gridP = do
+    let line = P.takeWhile1P (Just "grid line") (/= '\n')
+        row = A.map chr8 . A.castFromByteString A.Seq . T.encodeUtf8 <$> line
+    rows <- row `P.sepEndBy1` P.newline
+    case A.stackOuterSlicesM rows of
+        Left err -> fail $ "Cannot stack array rows: " ++ show err
+        Right arr -> pure $ A.computeS arr
+  where       
+    chr8 :: Word8 -> Char
+    chr8 = toEnum . fromIntegral
 
 loadGrid :: Int -> IO Grid
-loadGrid day = do
-    bstr <- loadInputBytes day
-    arr <- A.stackOuterSlicesM [
-        A.castFromByteString A.Seq line | line <- B.lines bstr]
-    return $ A.computeS arr
-
-chr8 :: Word8 -> Char
-chr8 = toEnum . fromIntegral
+loadGrid day = parseInput day gridP
