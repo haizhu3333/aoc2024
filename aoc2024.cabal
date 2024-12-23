@@ -117,3 +117,11 @@ executable day14
     build-depends:    base, aoc2024, megaparsec, unordered-containers
     hs-source-dirs:   day14
     default-language: GHC2021
+
+executable day15
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, massiv, megaparsec, transformers,
+                      unordered-containers, vector-th-unbox
+    hs-source-dirs:   day15
+    default-language: GHC2021
