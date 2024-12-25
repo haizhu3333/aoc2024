@@ -125,3 +125,11 @@ executable day15
                       unordered-containers, vector-th-unbox
     hs-source-dirs:   day15
     default-language: GHC2021
+
+executable day16
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, hashable, massiv, psqueues,
+                      unordered-containers
+    hs-source-dirs:   day16
+    default-language: GHC2021
