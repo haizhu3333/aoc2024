@@ -137,7 +137,8 @@ executable day16
 executable day17
     import:           warnings
     main-is:          Main.hs
-    build-depends:    base, aoc2024, megaparsec, process, streaming, text,
+    other-modules:    OutputEff, SMT
+    build-depends:    base, aoc2024, effectful-core, megaparsec, process, text,
                       vector
     hs-source-dirs:   day17
     default-language: GHC2021
