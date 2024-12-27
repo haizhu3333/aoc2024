@@ -142,3 +142,10 @@ executable day17
                       vector
     hs-source-dirs:   day17
     default-language: GHC2021
+
+executable day18
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, megaparsec, psqueues, unordered-containers
+    hs-source-dirs:   day18
+    default-language: GHC2021
