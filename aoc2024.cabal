@@ -157,3 +157,10 @@ executable day19
                       unordered-containers
     hs-source-dirs:   day19
     default-language: GHC2021
+
+executable day20
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, massiv, unordered-containers
+    hs-source-dirs:   day20
+    default-language: GHC2021
