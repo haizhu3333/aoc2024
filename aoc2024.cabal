@@ -164,3 +164,11 @@ executable day20
     build-depends:    base, aoc2024, massiv, unordered-containers
     hs-source-dirs:   day20
     default-language: GHC2021
+
+executable day21
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, aoc2024, hashable, psqueues, text,
+                      unordered-containers
+    hs-source-dirs:   day21
+    default-language: GHC2021
