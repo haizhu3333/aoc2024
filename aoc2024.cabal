@@ -56,7 +56,6 @@ executable day05
 
 executable day06
     import:           warnings
-    ghc-options:      -O2 -threaded -with-rtsopts=-N
     main-is:          Main.hs
     build-depends:    base, aoc2024, massiv, unordered-containers
     hs-source-dirs:   day06
@@ -175,10 +174,8 @@ executable day21
 
 executable day22
     import:           warnings
-    ghc-options:      -O2 -threaded -with-rtsopts=-N
     main-is:          Main.hs
-    build-depends:    base, aoc2024, hashable, massiv, text,
-                      unordered-containers
+    build-depends:    base, aoc2024, hashable, text, unordered-containers
     hs-source-dirs:   day22
     default-language: GHC2021
 

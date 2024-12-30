@@ -1,19 +1,19 @@
 module Main (main) where
 
-import Control.Monad (guard)
-import Data.HashSet (HashSet)
 import qualified Data.HashSet as S
-import Data.Massiv.Array (Ix2(..), U, Array, B, Ix1)
+import Data.Massiv.Array (Array, U, Ix2(..))
 import qualified Data.Massiv.Array as A
 import Data.Maybe (fromMaybe)
 
 import OrphanInstances ()
 import Utils (Grid, loadGrid)
 
+type Walls = Array U Ix2 Bool
+
 findStart :: Grid -> Ix2
 findStart = fromMaybe (error "No ^ found") . A.findIndex (== '^')
 
-toWalls :: Grid -> Array U Ix2 Bool
+toWalls :: Grid -> Walls
 toWalls grid = A.compute @U (A.map isWall grid)
   where
     isWall '.' = False
@@ -27,53 +27,58 @@ startDir = -1 :. 0
 turnRight :: Ix2 -> Ix2
 turnRight (i :. j) = j :. (-i)
 
-tracePath :: Array U Ix2 Bool -> Ix2 -> HashSet Ix2
-tracePath walls start = go start startDir S.empty
+data State = State { sPos :: !Ix2, sDir :: !Ix2 }
+    deriving (Eq, Show)
+
+class WallsLike a where
+    lookupWalls :: a -> Ix2 -> Maybe Bool
+
+instance WallsLike Walls where
+    lookupWalls = A.indexM
+
+tracePath :: WallsLike w => w -> Ix2 -> [State]
+tracePath walls start = go (State start startDir)
   where
-    go pos dir acc =
-        let pos' = pos + dir
-            acc' = S.insert pos acc
-        in  case A.indexM walls pos' of
-                Nothing -> acc'
-                Just True -> go pos (turnRight dir) acc
-                Just False -> go pos' dir acc'
+    go s@(State pos dir) = case lookupWalls walls (pos + dir) of
+        Nothing -> [s]
+        Just True -> s : go (State pos (turnRight dir))
+        Just False -> s : go (State (pos + dir) dir)
 
-data Walls1 = Walls1 (Array U Ix2 Bool) Ix2
+visitedPos :: Walls -> Ix2 -> [Ix2]
+visitedPos walls start =
+    S.toList $ S.fromList $ map sPos $ tracePath walls start
 
-indexWalls1 :: Walls1 -> Ix2 -> Maybe Bool
-indexWalls1 (Walls1 walls w) pos
-    | w == pos = Just True
-    | otherwise = A.indexM walls pos
+data Walls1 = Walls1 Walls Ix2
 
-addWall :: Array U Ix2 Bool -> Ix2 -> Array B Ix1 Walls1
-addWall walls start = A.fromList A.Par $ do
-    pos <- S.toList $ tracePath walls start
-    guard $ pos /= start
-    pure $ Walls1 walls pos 
+instance WallsLike Walls1 where
+    lookupWalls (Walls1 walls extra) pos
+      | pos == extra = Just True
+      | otherwise = A.indexM walls pos
 
-isLooping :: Walls1 -> Ix2 -> Bool
-isLooping walls start = go S.empty start startDir
+addExtra :: Walls -> Ix2 -> [Ix2] -> [Walls1]
+addExtra walls start visited =
+    map (Walls1 walls) $ filter (/= start) visited
+
+detectLoop :: Eq a => [a] -> Bool
+detectLoop stream = go stream stream
   where
-    go seen pos dir
-      | toQuad pos dir `elem` seen = True
-      | otherwise =
-        let pos' = pos + dir
-            seen' = S.insert (toQuad pos dir) seen
-        in  case indexWalls1 walls pos' of
-                Nothing -> False
-                Just True -> go seen' pos (turnRight dir)
-                Just False -> go seen' pos' dir
-    toQuad (i :. j) (di :. dj) = (i, j, di, dj)
+    go _ [] = False
+    go _ [_] = False
+    go [] _ = error "impossible! slow pointer ends before fast pointer"
+    go (x : xs) (_ : y : ys)
+      | x == y = True
+      | otherwise = go xs ys
 
-loopMakingOptions :: Array U Ix2 Bool -> Ix2 -> Int
-loopMakingOptions walls start =
-    A.sum $ A.map (fromEnum . flip isLooping start) (addWall walls start)
+numLoops :: Walls -> Ix2 -> [Ix2] -> Int
+numLoops walls start visited =
+    length $ filter (detectLoop . flip tracePath start)
+                    (addExtra walls start visited)
 
 main :: IO ()
 main = do
     grid <- loadGrid 6
     let start = findStart grid
         walls = toWalls grid
-    print $ S.size $ tracePath walls start
-    -- Very slow! around 2m23s even with parallelization
-    print $ loopMakingOptions walls start
+        visited = visitedPos walls start
+    print $ length visited
+    print $ numLoops walls start visited
